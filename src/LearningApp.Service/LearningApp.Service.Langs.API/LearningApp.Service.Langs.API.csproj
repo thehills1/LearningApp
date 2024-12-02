@@ -1,0 +1,12 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\LearningApp.Service.API.Contracts\LearningApp.Service.API.Contracts.csproj" />
+    <ProjectReference Include="..\LearningApp.Service.Langs.Core\LearningApp.Service.Langs.Core.csproj" />
+  </ItemGroup>
+
+</Project>
