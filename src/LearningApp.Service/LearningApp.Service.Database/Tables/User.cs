@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using LearningApp.Service.API.Contracts.Users.Common;
 
@@ -23,5 +24,9 @@ namespace LearningApp.Service.Database.Tables
 
 		[Required]
 		public Language Language { get; set; }
+
+		[Required]
+		[Column(TypeName = "timestamp with time zone")]
+		public DateTimeOffset RegistrationDate { get; set; } = DateTimeOffset.UtcNow;
 	}
 }

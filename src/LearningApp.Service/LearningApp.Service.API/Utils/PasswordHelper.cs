@@ -15,6 +15,7 @@ namespace LearningApp.Service.API.Utils
 		public static string HashPassword(string password)
 		{
 			password += Seed;
+
 			var rnd = new Random(password.GetHashCode());
 			var seed = new byte[10];
 			rnd.NextBytes(seed);
@@ -33,7 +34,7 @@ namespace LearningApp.Service.API.Utils
 				raw[index] = tmp;
 			}
 
-			using (SHA512 hasher = SHA512.Create())
+			using (var hasher = SHA512.Create())
 			{
 				var hash = hasher.ComputeHash(inputBytes);
 				return string.Join(string.Empty, hash.Select(b => b.ToString("x2")));

@@ -21,10 +21,6 @@ namespace LearningApp.Service.Langs.API.English
 			this[TranslationKeys.AuthorizationUsernameCannotBeNull] = "Username cannot be null.";
 			this[TranslationKeys.AuthorizationUsernameDoesNotMatchLength] = "Username length must be between {0} and {1}.";
 
-			this[TranslationKeys.AuthorizationPasswordCannotBeNull] = "Password cannot be null.";
-			this[TranslationKeys.AuthorizationPasswordDoesNotMatchLength] = "Password length must be between {0} and {1}.";
-			this[TranslationKeys.AuthorizationPasswordIsWrong] = "Wrong password.";
-
 			this[TranslationKeys.AuthorizationLanguageNotFound] = "Specified language not found.";
 		}
 	}

@@ -15,6 +15,11 @@ namespace LearningApp.Service.Langs.API.Russian
 			this[TranslationKeys.UsersUsernameCannotBeNull] = "Имя пользователя не может быть null.";
 			this[TranslationKeys.UsersUserWithSameUsernameAlreadyExists] = "Пользователь с именем {0} уже существует.";
 			this[TranslationKeys.UsersUserWithSameUsernameNotExists] = "Пользователь с именем {0} не существует.";
+
+			this[TranslationKeys.UsersUserIdCannotBeLessOrEqualToZero] = "Идентификтор пользователя не может быть меньше или равен нулю.";
+			this[TranslationKeys.UsersUserNotFound] = "Пользователь не найден.";
+
+			this[TranslationKeys.UsersChangePasswordRequestCannotBeNull] = "Запрос изменения пароля не может быть null.";
 		}
 	}
 }

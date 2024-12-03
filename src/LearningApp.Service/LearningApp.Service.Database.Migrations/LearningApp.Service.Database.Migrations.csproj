@@ -4,4 +4,8 @@
     <TargetFramework>net8.0</TargetFramework>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\LearningApp.Service.Database\LearningApp.Service.Database.csproj" />
+  </ItemGroup>
+
 </Project>

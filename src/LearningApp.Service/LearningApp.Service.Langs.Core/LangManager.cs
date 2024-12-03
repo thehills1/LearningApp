@@ -14,13 +14,13 @@ namespace LearningApp.Service.Langs.Core
 
 		public static Dictionary<Language, Language> LangsMap { get; }
 
-		public static Language DefaultLang { get; set; } = Language.Russian;
+		public static Language DefaultLang { get; set; } = Language.English;
 
 		static LangManager()
 		{
 			LangsMap = new Dictionary<Language, Language>()
 			{
-				{ Language.English, Language.Russian }
+				{ Language.Russian, Language.English }
 			};
 		}
 

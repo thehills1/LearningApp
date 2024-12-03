@@ -67,6 +67,17 @@ namespace LearningApp.Service.API.Entities
 			}
 		}
 
+		public MethodResult<T> ToResult<T>()
+		{
+			return new MethodResult<T>
+			{
+				IsSuccess = IsSuccess,
+				StatusCode = StatusCode,
+				Message = Message,
+				TranslationKeyArgs = TranslationKeyArgs
+			};
+		}
+
 		public static MethodResult Success()
 		{
 			return new MethodResult()

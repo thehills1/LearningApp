@@ -13,13 +13,11 @@ namespace LearningApp.Service.API.Controllers
 	[ApiController]
 	public class AuthorizationController : ApiControllerBase, IAuthorizationController
 	{
-		private readonly ILogger<AuthorizationController> _logger;
 		private readonly IAuthorizationManager _authorizationManager;
 		private readonly AppConfig _appConfig;
 
-		public AuthorizationController(ILogger<AuthorizationController> logger, IAuthorizationManager authorizationManager, AppConfig appConfig)
+		public AuthorizationController(ILogger<AuthorizationController> logger, IAuthorizationManager authorizationManager, AppConfig appConfig) : base(logger)
 		{
-			_logger = logger;
 			_authorizationManager = authorizationManager;
 			_appConfig = appConfig;
 		}
@@ -40,7 +38,7 @@ namespace LearningApp.Service.API.Controllers
 		[ProducesResponseType(typeof(void), StatusCodes.Status404NotFound)]
 		public IActionResult Login([FromBody] LoginRequest loginRequest)
 		{
-			return _authorizationManager.TryLogin(loginRequest).ToActionResult(Language);
+			return _authorizationManager.TryLogin(loginRequest).ToActionResult(loginRequest?.Language ?? CurrentUserLanguage);
 		}
 
 		/// <summary>
@@ -57,7 +55,7 @@ namespace LearningApp.Service.API.Controllers
 		[ProducesResponseType(typeof(void), StatusCodes.Status409Conflict)]
 		public IActionResult Register([FromBody] RegistrationRequest registrationRequest)
 		{
-			return _authorizationManager.TryRegister(registrationRequest).ToActionResult(Language);
+			return _authorizationManager.TryRegister(registrationRequest).ToActionResult(registrationRequest?.Language ?? CurrentUserLanguage);
 		}
 
 		/// <summary>
@@ -73,7 +71,7 @@ namespace LearningApp.Service.API.Controllers
 		[ProducesResponseType(typeof(void), StatusCodes.Status403Forbidden)]
 		public IActionResult Refresh()
 		{
-			return _authorizationManager.TryRefresh(User).ToActionResult(Language);
+			return _authorizationManager.TryRefresh(User).ToActionResult(CurrentUserLanguage);
 		}
 	}
 }

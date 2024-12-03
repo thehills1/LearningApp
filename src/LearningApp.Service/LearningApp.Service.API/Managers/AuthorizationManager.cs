@@ -20,18 +20,15 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace LearningApp.Service.API.Managers
 {
-	// TODO: реализовать перевод без авторизации, придумать способ не копипасть аргументы в конструктор результата метода
 	public class AuthorizationManager : IAuthorizationManager
 	{
 		public const string LanguageClaim = "Language";
+		public const string UserIdClaim = "UserId";
+		public const string PermissionLevelClaim = "PermissionLevel";
 		private const string RefreshTokenClaim = "RefreshToken";
-		private const string UserIdClaim = "UserId";
-		private const string PermissionLevelClaim = "PermissionLevel";
 
 		private static readonly Regex EmailPattern = new Regex(@"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+.[a-zA-Z]{2,}$");
 
-		private const int MinPasswordLength = 8;
-		private const int MaxPasswordLength = 32;
 		private const int MinUsernameLength = 5;
 		private const int MaxUsernameLength = 15;
 
@@ -39,14 +36,22 @@ namespace LearningApp.Service.API.Managers
 		private readonly IUsersManager _usersManager;
 		private readonly IAccessTokenPool _accessTokenPool;
 		private readonly ISyncManager _syncManager;
+		private readonly ICredentialsManager _credentialsManager;
 		private readonly AppConfig _appConfig;
 
-		public AuthorizationManager(ILogger<AuthorizationManager> logger, IUsersManager usersManager, IAccessTokenPool accessTokenPool, ISyncManager syncManager, AppConfig appConfig)
+		public AuthorizationManager(
+			ILogger<AuthorizationManager> logger, 
+			IUsersManager usersManager, 
+			IAccessTokenPool accessTokenPool, 
+			ISyncManager syncManager, 
+			ICredentialsManager credentialsManager, 
+			AppConfig appConfig)
 		{
 			_logger = logger;
 			_usersManager = usersManager;
 			_accessTokenPool = accessTokenPool;
 			_syncManager = syncManager;
+			_credentialsManager = credentialsManager;
 			_appConfig = appConfig;
 		}
 
@@ -63,25 +68,24 @@ namespace LearningApp.Service.API.Managers
 
 			if (!CheckEmail(loginRequest.Email, out var checkEmailResult))
 			{
-				return MethodResult<AccessTokenResponse>.Error(checkEmailResult.StatusCode, checkEmailResult.Message, checkEmailResult.TranslationKeyArgs);
+				return checkEmailResult.ToResult<AccessTokenResponse>();
 			}
 
-			if (!CheckPassword(loginRequest.Password, out var checkPasswordResult))
+			if (!_credentialsManager.CheckPasswordSyntax(loginRequest.Password, out var checkPasswordResult))
 			{
-				return MethodResult<AccessTokenResponse>.Error(checkPasswordResult.StatusCode, checkPasswordResult.Message, checkPasswordResult.TranslationKeyArgs);
+				return checkPasswordResult.ToResult<AccessTokenResponse>();
 			}
 
 			var checkUserExistsResult = _usersManager.CheckUserExistsByEmail(loginRequest.Email, false, true);
 			if (!checkUserExistsResult.IsSuccess)
 			{
-				return MethodResult<AccessTokenResponse>.Error(checkUserExistsResult.StatusCode, checkUserExistsResult.Message, checkUserExistsResult.TranslationKeyArgs);
+				return checkUserExistsResult.ToResult<AccessTokenResponse>();
 			}
 
 			var user = checkUserExistsResult.Value;
-			var hashedPassword = PasswordHelper.HashPassword(loginRequest.Password);
-			if (false && user.Password != hashedPassword)
+			if (!_credentialsManager.CheckPassword(user, loginRequest.Password))
 			{
-				return MethodResult<AccessTokenResponse>.Error(StatusCodes.Status401Unauthorized, TranslationKeys.AuthorizationPasswordIsWrong);
+				return MethodResult<AccessTokenResponse>.Error(StatusCodes.Status401Unauthorized, TranslationKeys.CredentialsPasswordIsWrong);
 			}
 
 			return AuthorizeInternal(user);
@@ -100,22 +104,22 @@ namespace LearningApp.Service.API.Managers
 
 			if (!CheckUsername(registrationRequest.Username, out var checkUsernameResult))
 			{
-				return MethodResult<AccessTokenResponse>.Error(checkUsernameResult.StatusCode, checkUsernameResult.Message, checkUsernameResult.TranslationKeyArgs);
+				return checkUsernameResult.ToResult<AccessTokenResponse>();
 			}
 
 			if (!CheckEmail(registrationRequest.Email, out var checkEmailResult))
 			{
-				return MethodResult<AccessTokenResponse>.Error(checkEmailResult.StatusCode, checkEmailResult.Message, checkEmailResult.TranslationKeyArgs);
+				return checkEmailResult.ToResult<AccessTokenResponse>();
 			}
 
-			if (!CheckPassword(registrationRequest.Password, out var checkPasswordResult))
+			if (!_credentialsManager.CheckPasswordSyntax(registrationRequest.Password, out var checkPasswordResult))
 			{
-				return MethodResult<AccessTokenResponse>.Error(checkPasswordResult.StatusCode, checkPasswordResult.Message, checkPasswordResult.TranslationKeyArgs);
+				return checkPasswordResult.ToResult<AccessTokenResponse>();
 			}
 
 			if (!CheckLanguage(registrationRequest.Language, out var checkLanguageResult))
 			{
-				return MethodResult<AccessTokenResponse>.Error(checkLanguageResult.StatusCode, checkLanguageResult.Message, checkLanguageResult.TranslationKeyArgs);
+				return checkLanguageResult.ToResult<AccessTokenResponse>();
 			}
 
 			using (_syncManager.Lock(DefaultSyncs.Registration(registrationRequest.Email)))
@@ -125,13 +129,13 @@ namespace LearningApp.Service.API.Managers
 					var checkUserWithSameEmailExistsResult = _usersManager.CheckUserExistsByEmail(registrationRequest.Email, true, true);
 					if (!checkUserWithSameEmailExistsResult.IsSuccess)
 					{
-						return MethodResult<AccessTokenResponse>.Error(checkUserWithSameEmailExistsResult.StatusCode, checkUserWithSameEmailExistsResult.Message, checkUserWithSameEmailExistsResult.TranslationKeyArgs);
+						return checkUserWithSameEmailExistsResult.ToResult<AccessTokenResponse>();
 					}
 
 					var checkUserWithSameUsernameExistsResult = _usersManager.CheckUserExistsByUsername(registrationRequest.Username, true, true);
 					if (!checkUserWithSameUsernameExistsResult.IsSuccess)
 					{
-						return MethodResult<AccessTokenResponse>.Error(checkUserWithSameUsernameExistsResult.StatusCode, checkUserWithSameUsernameExistsResult.Message, checkUserWithSameUsernameExistsResult.TranslationKeyArgs);
+						return checkUserWithSameUsernameExistsResult.ToResult<AccessTokenResponse>();
 					}
 
 					return RegisterInternal(registrationRequest);
@@ -239,26 +243,7 @@ namespace LearningApp.Service.API.Managers
 
 			checkResult = MethodResult.Success();
 			return true;
-		}
-
-		private bool CheckPassword(string password, out MethodResult checkResult)
-		{
-			if (password == null)
-			{
-				checkResult = MethodResult.Error(StatusCodes.Status400BadRequest, TranslationKeys.AuthorizationPasswordCannotBeNull);
-				return false;
-			}
-
-			var passwordLength = password.Length;
-			if (passwordLength < MinPasswordLength || passwordLength > MaxPasswordLength)
-			{
-				checkResult = MethodResult.Error(StatusCodes.Status400BadRequest, TranslationKeys.AuthorizationUsernameDoesNotMatchLength, MinPasswordLength, MaxPasswordLength);
-				return false;
-			}
-
-			checkResult = MethodResult.Success();
-			return true;
-		}
+		}		
 
 		private bool CheckLanguage(Language language, out MethodResult checkResult)
 		{

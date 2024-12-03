@@ -2,6 +2,7 @@
 using System.IO;
 using System.Reflection;
 using System.Text;
+using AutoMapper;
 using LearningApp.Service.API.Managers;
 using LearningApp.Service.API.Utils;
 using LearningApp.Service.Core.Syncs;
@@ -19,7 +20,6 @@ using Serilog;
 
 namespace LearningApp.Service.API
 {
-	// TODO: политика авторизации по уровню доступа
 	public class Program
 	{
 		public static void Main(string[] args)
@@ -113,15 +113,17 @@ namespace LearningApp.Service.API
 
 			container.AddSingleton<IAccessTokenPool, AccessTokenPool>();
 			container.AddSingleton<ISyncManager, SyncManager>();
+			container.AddSingleton<IMapper>(MapperConfig.InitializeMapper());
 
-			container.AddTransient<IAuthorizationManager, AuthorizationManager>();
-			container.AddTransient<IUsersManager, UsersManager>();
+			container.AddScoped<ICredentialsManager, CredentialsManager>();
+			container.AddScoped<IAuthorizationManager, AuthorizationManager>();
+			container.AddScoped<IUsersManager, UsersManager>();
 
-			container.AddTransient<IDbRepository, DbRepository>();
+			container.AddScoped<IDbRepository, DbRepository>();
 			container.AddDbContext<DatabaseContext>(options =>
 			{
 				options.UseNpgsql(appConfig.DatabaseConnectionString, assembly => assembly.MigrationsAssembly("LearningApp.Service.Database.Migrations"));
-			}, ServiceLifetime.Transient);
+			}, ServiceLifetime.Scoped);
 		}
 	}
 }

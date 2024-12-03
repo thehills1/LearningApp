@@ -21,10 +21,6 @@ namespace LearningApp.Service.Langs.API.Russian
 			this[TranslationKeys.AuthorizationUsernameCannotBeNull] = "Имя пользователя не может быть null.";
 			this[TranslationKeys.AuthorizationUsernameDoesNotMatchLength] = "Длина имени пользователя должна быть от {0} по {1} символов.";
 
-			this[TranslationKeys.AuthorizationPasswordCannotBeNull] = "Пароль не может быть null.";
-			this[TranslationKeys.AuthorizationPasswordDoesNotMatchLength] = "Длина пароля должна быть от {0} по {1} символов.";
-			this[TranslationKeys.AuthorizationPasswordIsWrong] = "Неверный пароль.";
-
 			this[TranslationKeys.AuthorizationLanguageNotFound] = "Указанный язык не найден.";
 		}
 	}
