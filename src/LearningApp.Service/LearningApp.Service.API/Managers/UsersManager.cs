@@ -54,7 +54,7 @@ namespace LearningApp.Service.API.Managers
 		{
 			if (request == null)
 			{
-				return MethodResult.Error(StatusCodes.Status400BadRequest, TranslationKeys.UsersChangePasswordRequestCannotBeNull);
+				return MethodResult.Error(StatusCodes.Status400BadRequest, TranslationKeys.UsersChangePasswordRequestCanNotBeNull);
 			}
 
 			if (!_credentialsManager.CheckPasswordSyntax(request.Password, out var checkOldPasswordResult))
@@ -101,7 +101,10 @@ namespace LearningApp.Service.API.Managers
 
 		public MethodResult<User> CheckUserExistsByEmail(string email, bool errorIfExists, bool noTraking = true)
 		{
-			if (email.IsNullOrEmpty()) return MethodResult<User>.Error(StatusCodes.Status400BadRequest, TranslationKeys.UsersEmailCannotBeNull);
+			if (email.IsNullOrEmpty())
+			{
+				return MethodResult<User>.Error(StatusCodes.Status400BadRequest, TranslationKeys.UsersEmailCanNotBeNull);
+			}
 
 			var user = _dbRepository.Get<User>(t => t.Email == email, noTraking).FirstOrDefault();
 			if (errorIfExists && user != null)
@@ -119,7 +122,10 @@ namespace LearningApp.Service.API.Managers
 
 		public MethodResult<User> CheckUserExistsByUsername(string username, bool errorIfExists, bool noTraking = true)
 		{
-			if (username.IsNullOrEmpty()) return MethodResult<User>.Error(StatusCodes.Status400BadRequest, TranslationKeys.UsersUsernameCannotBeNull);
+			if (username.IsNullOrEmpty())
+			{
+				return MethodResult<User>.Error(StatusCodes.Status400BadRequest, TranslationKeys.UsersUsernameCanNotBeNull);
+			}
 
 			var user = _dbRepository.Get<User>(t => t.Username == username, noTraking).FirstOrDefault();
 			if (errorIfExists && user != null)
@@ -139,7 +145,7 @@ namespace LearningApp.Service.API.Managers
 		{
 			if (id <= 0)
 			{
-				return MethodResult<User>.Error(StatusCodes.Status400BadRequest, TranslationKeys.UsersUserIdCannotBeLessOrEqualToZero);
+				return MethodResult<User>.Error(StatusCodes.Status400BadRequest, TranslationKeys.UsersUserIdCanNotBeLessOrEqualToZero);
 			}
 
 			var user = GetUserInternal(id);

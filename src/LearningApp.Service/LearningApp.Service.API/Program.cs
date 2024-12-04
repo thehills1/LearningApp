@@ -110,14 +110,18 @@ namespace LearningApp.Service.API
 		{
 			container.AddSingleton(c => c);
 			container.AddSingleton(appConfig);
+			container.AddTransient<Random>();
 
 			container.AddSingleton<IAccessTokenPool, AccessTokenPool>();
 			container.AddSingleton<ISyncManager, SyncManager>();
 			container.AddSingleton<IMapper>(MapperConfig.InitializeMapper());
+			container.AddSingleton<IUserSessionsManager, UserSessionsManager>();
+			container.AddScoped<IImagesCache, ImagesCache>();
 
 			container.AddScoped<ICredentialsManager, CredentialsManager>();
 			container.AddScoped<IAuthorizationManager, AuthorizationManager>();
 			container.AddScoped<IUsersManager, UsersManager>();
+			container.AddScoped<IQuestionsManager, QuestionsManager>();
 
 			container.AddScoped<IDbRepository, DbRepository>();
 			container.AddDbContext<DatabaseContext>(options =>

@@ -8,18 +8,18 @@ namespace LearningApp.Service.Langs.API.English
 	{
 		public Users()
 		{
-			this[TranslationKeys.UsersEmailCannotBeNull] = "Email cannot be null.";
+			this[TranslationKeys.UsersEmailCanNotBeNull] = "Email cannot be null.";
 			this[TranslationKeys.UsersUserWithSameEmailAlreadyExists] = "User with email {0} already exists.";
 			this[TranslationKeys.UsersUserWithSameEmailNotExists] = "User with email {0} not exists.";
 
-			this[TranslationKeys.UsersUsernameCannotBeNull] = "Username cannot be null.";
+			this[TranslationKeys.UsersUsernameCanNotBeNull] = "Username cannot be null.";
 			this[TranslationKeys.UsersUserWithSameUsernameAlreadyExists] = "User with username {0} already exists.";
 			this[TranslationKeys.UsersUserWithSameUsernameNotExists] = "User with username {0} not exists.";
 
-			this[TranslationKeys.UsersUserIdCannotBeLessOrEqualToZero] = "User's id can't be less or equal to zero.";
+			this[TranslationKeys.UsersUserIdCanNotBeLessOrEqualToZero] = "User's id can't be less or equal to zero.";
 			this[TranslationKeys.UsersUserNotFound] = "User not found.";
 
-			this[TranslationKeys.UsersChangePasswordRequestCannotBeNull] = "Change password request cannot be null.";
+			this[TranslationKeys.UsersChangePasswordRequestCanNotBeNull] = "Change password request cannot be null.";
 		}
 	}
 }

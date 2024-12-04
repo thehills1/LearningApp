@@ -1,4 +1,5 @@
-﻿using LearningApp.Service.API.Contracts.Users.Requests;
+﻿using LearningApp.Service.API.Contracts.Users;
+using LearningApp.Service.API.Contracts.Users.Requests;
 using LearningApp.Service.API.Contracts.Users.Responses;
 using LearningApp.Service.API.Managers;
 using Microsoft.AspNetCore.Authorization;
@@ -11,7 +12,7 @@ namespace LearningApp.Service.API.Controllers
 	[Authorize]
 	[Route("[controller]")]
 	[ApiController]
-	public class UsersController : ApiControllerBase
+	public class UsersController : ApiControllerBase, IUsersController
 	{
 		private readonly IUsersManager _usersManager;
 
@@ -33,7 +34,7 @@ namespace LearningApp.Service.API.Controllers
 		[HttpPost("{userId}")]
 		[ProducesResponseType<UserInfoResponse>(StatusCodes.Status200OK)]
 		[ProducesResponseType(typeof(void), StatusCodes.Status400BadRequest)]
-		[ProducesResponseType(typeof(void), StatusCodes.Status401Unauthorized)]		
+		[ProducesResponseType(typeof(void), StatusCodes.Status401Unauthorized)]
 		[ProducesResponseType(typeof(void), StatusCodes.Status403Forbidden)]
 		[ProducesResponseType(typeof(void), StatusCodes.Status404NotFound)]
 		public IActionResult GetUserById(long userId)

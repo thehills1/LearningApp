@@ -8,9 +8,9 @@ namespace LearningApp.Service.Langs.API.English
 	{
 		public Credentials()
 		{
-			this[TranslationKeys.CredentialsPasswordCannotBeNull] = "Password cannot be null.";
+			this[TranslationKeys.CredentialsPasswordCanNotBeNull] = "Password cannot be null.";
 			this[TranslationKeys.CredentialsPasswordDoesNotMatchLength] = "Password length must be between {0} and {1}.";
-			this[TranslationKeys.CredentialsNewPasswordCannotBeNull] = "New password cannot be null.";
+			this[TranslationKeys.CredentialsNewPasswordCanNotBeNull] = "New password cannot be null.";
 			this[TranslationKeys.CredentialsNewPasswordDoesNotMatchLength] = "New password length must be between {0} and {1}.";
 			this[TranslationKeys.CredentialsPasswordIsWrong] = "Wrong password.";
 		}

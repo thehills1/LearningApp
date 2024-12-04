@@ -63,7 +63,7 @@ namespace LearningApp.Service.API.Managers
 		{
 			if (loginRequest == null)
 			{
-				return MethodResult<AccessTokenResponse>.Error(StatusCodes.Status400BadRequest, TranslationKeys.AuthorizationLoginRequestCannotBeNull);
+				return MethodResult<AccessTokenResponse>.Error(StatusCodes.Status400BadRequest, TranslationKeys.AuthorizationLoginRequestCanNotBeNull);
 			}
 
 			if (!CheckEmail(loginRequest.Email, out var checkEmailResult))
@@ -99,7 +99,7 @@ namespace LearningApp.Service.API.Managers
 		{
 			if (registrationRequest == null)
 			{
-				return MethodResult<AccessTokenResponse>.Error(StatusCodes.Status400BadRequest, TranslationKeys.AuthorizationRegistrationRequestCannotBeNull);
+				return MethodResult<AccessTokenResponse>.Error(StatusCodes.Status400BadRequest, TranslationKeys.AuthorizationRegistrationRequestCanNotBeNull);
 			}
 
 			if (!CheckUsername(registrationRequest.Username, out var checkUsernameResult))
@@ -212,7 +212,7 @@ namespace LearningApp.Service.API.Managers
 		{
 			if (username == null)
 			{
-				checkResult = MethodResult.Error(StatusCodes.Status400BadRequest, TranslationKeys.AuthorizationUsernameCannotBeNull);
+				checkResult = MethodResult.Error(StatusCodes.Status400BadRequest, TranslationKeys.AuthorizationUsernameCanNotBeNull);
 				return false;
 			}
 
@@ -231,7 +231,7 @@ namespace LearningApp.Service.API.Managers
 		{
 			if (email == null)
 			{
-				checkResult = MethodResult.Error(StatusCodes.Status400BadRequest, TranslationKeys.AuthorizationEmailCannotBeNull);
+				checkResult = MethodResult.Error(StatusCodes.Status400BadRequest, TranslationKeys.AuthorizationEmailCanNotBeNull);
 				return false;
 			}
 

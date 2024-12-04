@@ -14,12 +14,10 @@ namespace LearningApp.Service.API.Controllers
 	public class AuthorizationController : ApiControllerBase, IAuthorizationController
 	{
 		private readonly IAuthorizationManager _authorizationManager;
-		private readonly AppConfig _appConfig;
 
-		public AuthorizationController(ILogger<AuthorizationController> logger, IAuthorizationManager authorizationManager, AppConfig appConfig) : base(logger)
+		public AuthorizationController(ILogger<AuthorizationController> logger, IAuthorizationManager authorizationManager) : base(logger)
 		{
 			_authorizationManager = authorizationManager;
-			_appConfig = appConfig;
 		}
 
 		/// <summary>

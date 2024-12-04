@@ -34,11 +34,11 @@ namespace LearningApp.Service.API.Managers
 			{
 				if (newPassword)
 				{
-					checkResult = MethodResult.Error(StatusCodes.Status400BadRequest, TranslationKeys.CredentialsNewPasswordCannotBeNull);
+					checkResult = MethodResult.Error(StatusCodes.Status400BadRequest, TranslationKeys.CredentialsNewPasswordCanNotBeNull);
 				}
 				else
 				{
-					checkResult = MethodResult.Error(StatusCodes.Status400BadRequest, TranslationKeys.CredentialsPasswordCannotBeNull);
+					checkResult = MethodResult.Error(StatusCodes.Status400BadRequest, TranslationKeys.CredentialsPasswordCanNotBeNull);
 				}
 
 				return false;

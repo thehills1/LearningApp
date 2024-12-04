@@ -3,6 +3,7 @@ using System;
 using LearningApp.Service.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace LearningApp.Service.Database.Migrations.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    partial class DatabaseContextModelSnapshot : ModelSnapshot
+    [Migration("20241204225141_ImplementedQuestionsControllerTables")]
+    partial class ImplementedQuestionsControllerTables
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -31,6 +34,7 @@ namespace LearningApp.Service.Database.Migrations.Migrations
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
 
                     b.Property<long?>("ImageId")
+                        .IsRequired()
                         .HasColumnType("bigint");
 
                     b.Property<bool>("IsCorrect")
@@ -59,6 +63,7 @@ namespace LearningApp.Service.Database.Migrations.Migrations
                         .HasColumnType("integer");
 
                     b.Property<long?>("ImageId")
+                        .IsRequired()
                         .HasColumnType("bigint");
 
                     b.Property<double>("MaxScore")
@@ -109,11 +114,9 @@ namespace LearningApp.Service.Database.Migrations.Migrations
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
 
                     b.Property<string>("English")
-                        .IsRequired()
                         .HasColumnType("VARCHAR(1024)");
 
                     b.Property<string>("Russian")
-                        .IsRequired()
                         .HasColumnType("VARCHAR(1024)");
 
                     b.HasKey("Id");

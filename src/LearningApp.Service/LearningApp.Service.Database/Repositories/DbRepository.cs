@@ -55,7 +55,7 @@ namespace LearningApp.Service.Database.Repositories
 			SaveChanges();
 		}
 
-		public IEnumerable<T> Get<T>(Expression<Func<T, bool>> selector, bool noTracking = false) where T : class, ITable
+		public IEnumerable<T> Get<T>(Expression<Func<T, bool>> selector, bool noTracking = true) where T : class, ITable
 		{
 			var set = _databaseContext.Set<T>().Where(selector);
 			if (noTracking) set = set.AsNoTracking();
@@ -63,7 +63,7 @@ namespace LearningApp.Service.Database.Repositories
 			return set.ToList();
 		}
 
-		public T Get<T>(long id, bool noTracking = false) where T : class, ITable
+		public T Get<T>(long id, bool noTracking = true) where T : class, ITable
 		{
 			var set = _databaseContext.Set<T>().Where(t => t.Id == id);
 			if (noTracking) set = set.AsNoTracking();
@@ -71,7 +71,7 @@ namespace LearningApp.Service.Database.Repositories
 			return set.FirstOrDefault();
 		}
 
-		public IEnumerable<T> GetAll<T>(bool noTracking = false) where T : class, ITable
+		public IEnumerable<T> GetAll<T>(bool noTracking = true) where T : class, ITable
 		{
 			var set = _databaseContext.Set<T>();
 			if (noTracking)

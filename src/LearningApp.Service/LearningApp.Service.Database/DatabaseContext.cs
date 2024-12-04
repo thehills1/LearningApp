@@ -9,6 +9,14 @@ namespace LearningApp.Service.Database
 	{
 		public DbSet<User> Users { get; set; }
 
+		public DbSet<Submission> Submissions { get; set; }
+
+		public DbSet<Question> Questions { get; set; }
+
+		public DbSet<Answer> Answers { get; set; }
+
+		public DbSet<Title> Titles { get; set; }
+
 		public DatabaseContext(DbContextOptions options) : base(options)
 		{
 			Database.EnsureCreated();

@@ -20,12 +20,12 @@ namespace LearningApp.Service.API.Entities
 			return okObjectResult;
 		}
 
-		public static MethodResult<T> Success(T result)
+		public static MethodResult<T> Success(T result, int statusCode = StatusCodes.Status200OK)
 		{
 			return new MethodResult<T>()
 			{
 				IsSuccess = true,
-				StatusCode = StatusCodes.Status200OK,
+				StatusCode = statusCode,
 				Value = result
 			};
 		}
@@ -78,12 +78,12 @@ namespace LearningApp.Service.API.Entities
 			};
 		}
 
-		public static MethodResult Success()
+		public static MethodResult Success(int statusCode = StatusCodes.Status200OK)
 		{
 			return new MethodResult()
 			{
 				IsSuccess = true,
-				StatusCode = StatusCodes.Status200OK
+				StatusCode = statusCode
 			};
 		}
 
