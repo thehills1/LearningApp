@@ -28,7 +28,13 @@ namespace LearningApp.Service.API.Managers
 		private readonly IImagesCache _imagesCache;
 		private readonly Random _random;		
 
-		public QuestionsManager(ILogger<QuestionsManager> logger, IUserSessionsManager userSessionsManager, ISyncManager syncManager, IDbRepository dbRepository, IImagesCache imagesCache, Random random)
+		public QuestionsManager(
+			ILogger<QuestionsManager> logger, 
+			IUserSessionsManager userSessionsManager, 
+			ISyncManager syncManager, 
+			IDbRepository dbRepository, 
+			IImagesCache imagesCache, 
+			Random random)
 		{
 			_logger = logger;
 			_userSessionsManager = userSessionsManager;
@@ -151,6 +157,7 @@ namespace LearningApp.Service.API.Managers
 
 				var totalScore = 0D;
 				var maxScore = question.MaxScore;
+				var submissionDate = DateTimeOffset.UtcNow;
 				foreach (var answer in answers)
 				{
 					var answerReceivedScore = answer.IsCorrect ? maxScore / answers.Count : 0D;
@@ -160,7 +167,8 @@ namespace LearningApp.Service.API.Managers
 					{
 						UserId = userId,
 						AnswerId = answer.Id,
-						ReceivedScore = answerReceivedScore
+						ReceivedScore = answerReceivedScore,
+						SubmissionDate = submissionDate
 					};
 
 					_dbRepository.Add(submission);
