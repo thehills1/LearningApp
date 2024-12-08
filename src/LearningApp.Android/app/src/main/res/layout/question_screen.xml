@@ -1,0 +1,100 @@
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#1E3D32"
+    android:padding="16dp">
+
+    <TextView
+        android:id="@+id/question_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="30dp"
+        android:layout_marginTop="200dp"
+        android:text="Вопрос"
+        android:textColor="#FFFFFF"
+        android:textSize="24sp" />
+
+    <TextView
+        android:id="@+id/question_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Какой из следующих методов используется для добавления элемента в список в Python?"
+        android:textColor="#FFFFFF"
+        android:textSize="16sp"
+        android:layout_marginBottom="20dp"
+        android:layout_gravity="center_horizontal"
+        android:textAlignment="center" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="192dp"
+        android:layout_marginBottom="32dp"
+        android:orientation="vertical">
+
+        <Button
+            android:id="@+id/option_a"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:background="@drawable/button_background2"
+            android:text="A) list.append(element)"
+            android:textColor="#000000" />
+
+        <Button
+            android:id="@+id/option_b"
+            :layout_marginTop="122dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="8dp"
+            android:background="@drawable/button_background2"
+            android:text="B) list.add(element)"
+            android:textColor="#000000" />
+
+        <Button
+            android:id="@+id/option_c"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/button_background2"
+            android:text="C) list.insert(element)"
+            android:textColor="#000000" />
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/next_question_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Следующий вопрос"
+        android:backgroundTint="#4F4F4F"
+        android:textColor="#FFFFFF"
+        android:layout_marginBottom="24dp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_marginBottom="8dp">
+
+        <TextView
+            android:id="@+id/need_hint"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Нужна подсказка?"
+            android:textColor="#FFFFFF"
+            android:textSize="14sp"
+            android:layout_marginEnd="16dp" />
+
+        <TextView
+            android:id="@+id/report_error"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Нашли ошибку"
+            android:textColor="#FFFFFF"
+            android:textSize="14sp" />
+    </LinearLayout>
+</LinearLayout>
