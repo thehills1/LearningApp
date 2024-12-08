@@ -71,7 +71,9 @@
 		public const string QuestionsAnswerNotFound = "questions.answer.notfound";
 		public const string QuestionsAnswerIncorrectForQuestion = "questions.answer.incorrectforquestion";
 		public const string QuestionsQuestionDifficultyNotDefined = "questions.difficulty.notdefined";
-		public const string QuestionsSubmitActionNotDefined = "questions.difficulty.notdefined";
+		public const string QuestionsSubmitActionNotDefined = "questions.submitaction.notdefined";
+		public const string QuestionsGetNextQuestionRequestCanNotBeNull = "questions.getnextquestion.requestcannotbenull";
+		public const string QuestionsProgrammingLanguageNotDefined = "questions.programminglanguage.notdefined";
 
 		#endregion
 	}

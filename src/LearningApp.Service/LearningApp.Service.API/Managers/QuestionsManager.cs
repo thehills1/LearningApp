@@ -44,14 +44,24 @@ namespace LearningApp.Service.API.Managers
 			_random = random;
 		}
 
-		public MethodResult<QuestionInfoResponse> TryGetNextQuestion(long userId, QuestionDifficulty difficulty, Language language)
+		public MethodResult<QuestionInfoResponse> TryGetNextQuestion(long userId, Language userLanguage, GetNextQuestionRequest request)
 		{
-			if (!CheckQuestionDifficulty(difficulty, out var checkDifficultyResult))
+			if (request == null)
+			{
+				return MethodResult<QuestionInfoResponse>.Error(StatusCodes.Status400BadRequest, TranslationKeys.QuestionsGetNextQuestionRequestCanNotBeNull);
+			}
+
+			if (!CheckQuestionDifficulty(request.Difficulty, out var checkDifficultyResult))
 			{
 				return checkDifficultyResult.ToResult<QuestionInfoResponse>();
 			}
 
-			return GetNextQuestionInternal(userId, difficulty, language);
+			if (!CheckProgrammingLanguage(request.ProgrammingLanguage, out var checkProgrammingLanguageResult))
+			{
+				return checkProgrammingLanguageResult.ToResult<QuestionInfoResponse>();
+			}
+
+			return GetNextQuestionInternal(userId, userLanguage, request);
 		}
 
 		public MethodResult<QuestionInfoResponse> TryGetQuestionById(long userId, PermissionLevel userPerms, long questionId, Language language)
@@ -116,7 +126,7 @@ namespace LearningApp.Service.API.Managers
 			return SubmitQuestionAnswerInternal(userId, submitRequest, question, answers, userSession);
 		}
 
-		private MethodResult<QuestionInfoResponse> GetNextQuestionInternal(long userId, QuestionDifficulty difficulty, Language language)
+		private MethodResult<QuestionInfoResponse> GetNextQuestionInternal(long userId, Language userLanguage, GetNextQuestionRequest request)
 		{
 			using (_syncManager.Lock(DefaultSyncs.GetNextQuestion(userId)))
 			{
@@ -132,7 +142,11 @@ namespace LearningApp.Service.API.Managers
 
 				var userSession = _userSessionsManager.GetOrAdd(userId);
 				var excludedQuestionIds = new HashSet<long>(recentQuestionIds.Concat(userSession.AnsweringQuestions));
-				var unansweredQuestions = _dbRepository.GetAll<Question>(true).Where(q => q.Difficulty == difficulty && !excludedQuestionIds.Contains(q.Id)).ToList();
+				var unansweredQuestions = _dbRepository.GetAll<Question>(true)
+					.Where(q => q.Difficulty == request.Difficulty
+						&& q.ProgrammingLanguage == request.ProgrammingLanguage
+						&& !excludedQuestionIds.Contains(q.Id))
+					.ToList();
 				if (unansweredQuestions.Count == 0)
 				{
 					return MethodResult<QuestionInfoResponse>.Success(default, StatusCodes.Status204NoContent);
@@ -141,7 +155,7 @@ namespace LearningApp.Service.API.Managers
 				var question = _random.NextElement(unansweredQuestions);
 				userSession.AddAnsweringQuestion(question.Id);
 
-				return MethodResult<QuestionInfoResponse>.Success(MapQuestionToResponse(question, language));
+				return MethodResult<QuestionInfoResponse>.Success(MapQuestionToResponse(question, userLanguage));
 			}
 		}
 
@@ -246,6 +260,18 @@ namespace LearningApp.Service.API.Managers
 			if (!Enum.IsDefined(difficulty))
 			{
 				checkResult = MethodResult.Error(StatusCodes.Status400BadRequest, TranslationKeys.QuestionsQuestionDifficultyNotDefined);
+				return false;
+			}
+
+			checkResult = MethodResult.Success();
+			return true;
+		}
+
+		private bool CheckProgrammingLanguage(ProgrammingLanguage language, out MethodResult checkResult)
+		{
+			if (!Enum.IsDefined(language))
+			{
+				checkResult = MethodResult.Error(StatusCodes.Status400BadRequest, TranslationKeys.QuestionsProgrammingLanguageNotDefined);
 				return false;
 			}
 

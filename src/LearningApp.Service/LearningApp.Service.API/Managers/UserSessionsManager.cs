@@ -24,5 +24,10 @@ namespace LearningApp.Service.API.Managers
 
 			return session;
 		}
+
+		public bool TryRemove(long userId)
+		{
+			return _currentSessions.TryRemove(userId, out _);
+		}
 	}
 }

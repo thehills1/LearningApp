@@ -14,7 +14,7 @@ namespace LearningApp.Service.Database.Tables
 		public QuestionDifficulty Difficulty { get; set; }
 
 		[Required]
-		public bool MultipleCorrectAnswers { get; set; }
+		public ProgrammingLanguage ProgrammingLanguage { get; set; }
 
 		[Required]
 		public double MaxScore { get; set; }

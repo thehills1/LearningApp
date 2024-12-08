@@ -37,6 +37,7 @@ namespace LearningApp.Service.API.Managers
 		private readonly IAccessTokenPool _accessTokenPool;
 		private readonly ISyncManager _syncManager;
 		private readonly ICredentialsManager _credentialsManager;
+		private readonly IUserSessionsManager _userSessionsManager;
 		private readonly AppConfig _appConfig;
 
 		public AuthorizationManager(
@@ -44,7 +45,8 @@ namespace LearningApp.Service.API.Managers
 			IUsersManager usersManager, 
 			IAccessTokenPool accessTokenPool, 
 			ISyncManager syncManager, 
-			ICredentialsManager credentialsManager, 
+			ICredentialsManager credentialsManager,
+			IUserSessionsManager userSessionsManager,
 			AppConfig appConfig)
 		{
 			_logger = logger;
@@ -52,6 +54,7 @@ namespace LearningApp.Service.API.Managers
 			_accessTokenPool = accessTokenPool;
 			_syncManager = syncManager;
 			_credentialsManager = credentialsManager;
+			_userSessionsManager = userSessionsManager;
 			_appConfig = appConfig;
 		}
 
@@ -149,32 +152,44 @@ namespace LearningApp.Service.API.Managers
 		/// <returns></returns>
 		public MethodResult<AccessTokenResponse> TryRefresh(ClaimsPrincipal user)
 		{
-			var refreshToken = user.Claims.FirstOrDefault(c => c.Type == RefreshTokenClaim)?.Value;
-			if (refreshToken == null)
+			if (!CheckRefreshToken(user, out var checkRefreshTokenResult))
 			{
-				return MethodResult<AccessTokenResponse>.Error(StatusCodes.Status403Forbidden, TranslationKeys.AuthorizationRefreshTokenNotFound);
+				return checkRefreshTokenResult.ToResult<AccessTokenResponse>();
 			}
 
-			var tokenInfo = _accessTokenPool.TryGetTokenInfo(refreshToken);
-			if (tokenInfo == null)
+			var refreshToken = checkRefreshTokenResult.Value;
+			if (!CheckSession(refreshToken, out var checkSessionResult))
 			{
-				return MethodResult<AccessTokenResponse>.Error(StatusCodes.Status401Unauthorized, TranslationKeys.AuthorizationSessionIsNotValid);
+				return checkSessionResult;
 			}
 
-			var userId = user.Claims.FirstOrDefault(c => c.Type == UserIdClaim)?.Value;
-			User userTable;
-			if (userId == null || !long.TryParse(userId, out var parsedUserId) || (userTable = _usersManager.GetUserInternal(parsedUserId)) == null) 
+			if (!CheckUserId(user, out var checkUserResult))
 			{
-				return MethodResult<AccessTokenResponse>.Error(StatusCodes.Status403Forbidden, TranslationKeys.AuthorizationUserNotFound);
+				return checkUserResult.ToResult<AccessTokenResponse>();
 			}
 
-			var authorizeResult = AuthorizeInternal(userTable);
+			var authorizeResult = AuthorizeInternal(checkUserResult.Value);
 			if (authorizeResult.IsSuccess)
 			{
 				_accessTokenPool.Delete(refreshToken);
 			}
 
 			return authorizeResult;
+		}
+
+		public MethodResult TryLogout(ClaimsPrincipal user)
+		{
+			if (!CheckRefreshToken(user, out var checkRefreshTokenResult)) return checkRefreshTokenResult;
+
+			var refreshToken = checkRefreshTokenResult.Value;
+			if (!CheckSession(refreshToken, out var checkSessionResult)) return checkSessionResult;
+			if (!CheckUserId(user, out var checkUserResult)) return checkUserResult;
+
+			var userId = checkUserResult.Value.Id;
+			_accessTokenPool.Delete(refreshToken);
+			_userSessionsManager.TryRemove(userId);
+
+			return MethodResult.Success();
 		}
 
 		private MethodResult<AccessTokenResponse> RegisterInternal(RegistrationRequest registrationRequest)
@@ -206,6 +221,45 @@ namespace LearningApp.Service.API.Managers
 			_accessTokenPool.Append(tokenResponse);
 
 			return MethodResult<AccessTokenResponse>.Success(tokenResponse);
+		}
+
+		private bool CheckRefreshToken(ClaimsPrincipal user, out MethodResult<string> checkResult)
+		{
+			var refreshToken = user.Claims.FirstOrDefault(c => c.Type == RefreshTokenClaim)?.Value;
+			if (refreshToken == null)
+			{
+				checkResult = MethodResult<string>.Error(StatusCodes.Status403Forbidden, TranslationKeys.AuthorizationRefreshTokenNotFound);
+				return false;
+			}
+
+			checkResult = new();
+			return true;
+		}
+
+		private bool CheckSession(string refreshToken, out MethodResult<AccessTokenResponse> checkResult)
+		{
+			var tokenInfo = _accessTokenPool.TryGetTokenInfo(refreshToken);
+			if (tokenInfo == null)
+			{
+				checkResult = MethodResult<AccessTokenResponse>.Error(StatusCodes.Status401Unauthorized, TranslationKeys.AuthorizationSessionIsNotValid);
+				return false;
+			}
+
+			checkResult = new();
+			return true;
+		}
+
+		private bool CheckUserId(ClaimsPrincipal user, out MethodResult<User> checkResult)
+		{
+			var userId = user.Claims.FirstOrDefault(c => c.Type == UserIdClaim)?.Value;
+			User userTable;
+			if (userId == null || !long.TryParse(userId, out var parsedUserId) || (userTable = _usersManager.GetUserInternal(parsedUserId)) == null)
+			{
+				checkResult = MethodResult<User>.Error(StatusCodes.Status403Forbidden, TranslationKeys.AuthorizationUserNotFound);
+			}
+
+			checkResult = new();
+			return true;
 		}
 
 		private bool CheckUsername(string username, out MethodResult checkResult)

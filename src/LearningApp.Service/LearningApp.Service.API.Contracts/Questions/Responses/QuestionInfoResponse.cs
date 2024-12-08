@@ -9,6 +9,8 @@ namespace LearningApp.Service.API.Contracts.Questions.Responses
 
 		public QuestionDifficulty Difficulty { get; set; }
 
+		public ProgrammingLanguage ProgrammingLanguage { get; set; }
+
 		public double MaxScore { get; set; }
 
 		public string Title { get; set; }

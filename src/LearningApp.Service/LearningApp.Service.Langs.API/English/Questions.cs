@@ -17,6 +17,8 @@ namespace LearningApp.Service.Langs.API.English
 			this[TranslationKeys.QuestionsAnswerIncorrectForQuestion] = "Incorrect question answer specified.";
 			this[TranslationKeys.QuestionsQuestionDifficultyNotDefined] = "Specified question difficulty not defined.";
 			this[TranslationKeys.QuestionsSubmitActionNotDefined] = "Specified submit action not defined.";
+			this[TranslationKeys.QuestionsGetNextQuestionRequestCanNotBeNull] = "Get next question request can't be null.";
+			this[TranslationKeys.QuestionsProgrammingLanguageNotDefined] = "Specified programming language not defined.";
 		}
 	}
 }

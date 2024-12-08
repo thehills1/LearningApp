@@ -71,5 +71,21 @@ namespace LearningApp.Service.API.Controllers
 		{
 			return _authorizationManager.TryRefresh(User).ToActionResult(CurrentUserLanguage);
 		}
+
+		/// <summary>
+		/// Выйти из аккаунта.
+		/// </summary>
+		/// <returns></returns>
+		/// <response code="401">Сессия не валидна</response>
+		/// <response code="403">Некорректные параметры сессии</response>
+		[Authorize]
+		[HttpPost("logout")]
+		[ProducesResponseType(typeof(void), StatusCodes.Status200OK)]
+		[ProducesResponseType(typeof(void), StatusCodes.Status401Unauthorized)]
+		[ProducesResponseType(typeof(void), StatusCodes.Status403Forbidden)]
+		public IActionResult Logout()
+		{
+			return _authorizationManager.TryLogout(User).ToActionResult(CurrentUserLanguage);
+		}
 	}
 }

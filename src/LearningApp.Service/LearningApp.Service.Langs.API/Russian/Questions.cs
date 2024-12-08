@@ -17,6 +17,8 @@ namespace LearningApp.Service.Langs.API.Russian
 			this[TranslationKeys.QuestionsAnswerIncorrectForQuestion] = "Указан недействительный ответ на вопрос.";
 			this[TranslationKeys.QuestionsQuestionDifficultyNotDefined] = "Указан несуществующий тип сложности вопроса.";
 			this[TranslationKeys.QuestionsSubmitActionNotDefined] = "Указан несуществующий тип действия ответа на вопрос.";
+			this[TranslationKeys.QuestionsGetNextQuestionRequestCanNotBeNull] = "Запрос получения следующего вопроса не может быть null.";
+			this[TranslationKeys.QuestionsProgrammingLanguageNotDefined] = "Указан несуществующий язык программирования.";
 		}
 	}
 }

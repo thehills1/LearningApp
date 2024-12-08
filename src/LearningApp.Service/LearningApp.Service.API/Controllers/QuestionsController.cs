@@ -1,5 +1,4 @@
 ﻿using LearningApp.Service.API.Contracts.Questions;
-using LearningApp.Service.API.Contracts.Questions.Common;
 using LearningApp.Service.API.Contracts.Questions.Requests;
 using LearningApp.Service.API.Contracts.Questions.Responses;
 using LearningApp.Service.API.Managers;
@@ -23,7 +22,7 @@ namespace LearningApp.Service.API.Controllers
 		/// <summary>
 		/// Получить следующий вопрос, который можно решить.
 		/// </summary>
-		/// <param name="difficulty"></param>
+		/// <param name="request"></param>
 		/// <returns></returns>
 		/// <response code="200">Информация о вопросе</response>
 		/// <response code="204">Пользователь уже ответил на все возможные вопросы за промежуток времени</response>
@@ -35,9 +34,9 @@ namespace LearningApp.Service.API.Controllers
 		[ProducesResponseType(typeof(void), StatusCodes.Status400BadRequest)]
 		[ProducesResponseType(typeof(void), StatusCodes.Status401Unauthorized)]
 		[ProducesResponseType(typeof(void), StatusCodes.Status403Forbidden)]
-		public IActionResult GetNextQuestion(QuestionDifficulty difficulty)
+		public IActionResult GetNextQuestion([FromBody] GetNextQuestionRequest request)
 		{
-			return _questionsManager.TryGetNextQuestion(CurrentUserId, difficulty, CurrentUserLanguage).ToActionResult(CurrentUserLanguage);
+			return _questionsManager.TryGetNextQuestion(CurrentUserId, CurrentUserLanguage, request).ToActionResult(CurrentUserLanguage);
 		}
 
 		/// <summary>
