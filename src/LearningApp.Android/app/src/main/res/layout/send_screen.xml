@@ -2,9 +2,8 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#80000000"> <!-- Полупрозрачный фон -->
+    android:background="#80000000">
 
-    <!-- Всплывающее окно -->
     <LinearLayout
         android:layout_width="300dp"
         android:layout_height="wrap_content"
@@ -15,7 +14,6 @@
         android:layout_centerInParent="true"
         android:gravity="center">
 
-    <!-- Иконка -->
     <ImageView
         android:id="@+id/icon"
         android:layout_width="64dp"
@@ -24,7 +22,6 @@
         android:contentDescription="@string/support_icon_desc"
         android:layout_gravity="center_horizontal" />
 
-    <!-- Поле для ввода -->
         <EditText
             android:id="@+id/input_field"
             android:layout_width="match_parent"
@@ -35,9 +32,8 @@
             android:hint="Введите сообщение"
             android:padding="8dp"
             android:textColor="#FFFFFF"
-            android:textColorHint="#BDBDBD" /> <!-- Фон с закругленными углами -->
+            android:textColorHint="#BDBDBD" />
 
-    <!-- Кнопки -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -45,7 +41,6 @@
         android:layout_marginTop="16dp"
         android:gravity="center">
 
-        <!-- Кнопка Отправить -->
         <Button
             android:id="@+id/btn_send"
             android:layout_width="0dp"
@@ -56,7 +51,6 @@
             android:textColor="#FFFFFF"
             android:layout_marginEnd="8dp" />
 
-        <!-- Кнопка Отмена -->
         <Button
             android:id="@+id/btn_cancel"
             android:layout_width="0dp"

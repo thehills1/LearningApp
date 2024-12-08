@@ -9,9 +9,6 @@
     tools:context=".MainActivity">
 
     <!-- Заголовок -->
-
-    <!-- Кнопки для языков программирования -->
-
     <TextView
         android:id="@+id/tv_title"
         android:layout_width="wrap_content"
@@ -23,11 +20,10 @@
         android:textSize="24sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.533"
-        app:layout_constraintMarginTop="32dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <!-- Кнопка Python -->
     <Button
         android:id="@+id/btn_python"
         style="@style/ButtonStyle"
@@ -35,12 +31,11 @@
         android:background="@drawable/button_background2"
         android:text="@string/python"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.495"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tv_title"
-        app:radius="16dp"
         app:layout_constraintWidth_percent="0.7" />
 
+    <!-- Кнопка C# -->
     <Button
         android:id="@+id/btn_csharp"
         style="@style/ButtonStyle"
@@ -48,12 +43,11 @@
         android:background="@drawable/button_background2"
         android:text="@string/csharp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.504"
-        app:layout_constraintMarginTop="16dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/btn_python"
         app:layout_constraintWidth_percent="0.7" />
 
+    <!-- Кнопка C++ -->
     <Button
         android:id="@+id/btn_cpp"
         style="@style/ButtonStyle"
@@ -61,12 +55,11 @@
         android:background="@drawable/button_background2"
         android:text="@string/cpp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.495"
-        app:layout_constraintMarginTop="16dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/btn_csharp"
         app:layout_constraintWidth_percent="0.7" />
 
+    <!-- Кнопка Java -->
     <Button
         android:id="@+id/btn_java"
         style="@style/ButtonStyle"
@@ -74,12 +67,11 @@
         android:background="@drawable/button_background2"
         android:text="@string/java"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.504"
-        app:layout_constraintMarginTop="16dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/btn_cpp"
         app:layout_constraintWidth_percent="0.7" />
 
+    <!-- Кнопка JavaScript -->
     <Button
         android:id="@+id/btn_javascript"
         style="@style/ButtonStyle"
@@ -87,13 +79,11 @@
         android:background="@drawable/button_background2"
         android:text="@string/javascript"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.504"
-        app:layout_constraintMarginTop="16dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/btn_java"
         app:layout_constraintWidth_percent="0.7" />
 
-    <!-- Текст "Не нашли язык?" -->
+    <!-- Кнопка HTML/CSS -->
     <Button
         android:id="@+id/btn_htmlcss"
         style="@style/ButtonStyle"
@@ -101,12 +91,11 @@
         android:background="@drawable/button_background2"
         android:text="@string/html_css"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.504"
-        app:layout_constraintMarginTop="16dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/btn_javascript"
         app:layout_constraintWidth_percent="0.7" />
 
+    <!-- Текст 'Не найдено' -->
     <TextView
         android:id="@+id/tv_not_found"
         android:layout_width="wrap_content"
@@ -116,7 +105,6 @@
         android:textColor="@color/text_color"
         android:textSize="14sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintMarginTop="24dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/btn_htmlcss" />
 

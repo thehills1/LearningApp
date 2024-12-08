@@ -6,16 +6,11 @@
     android:background="#1E3D32"
     android:padding="16dp">
 
-    <!-- Верхняя панель с ником и настройками -->
-
-    <!-- Раздел "Ваши награды" -->
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="#2E8B60"
-        android:padding="8dp"
-        android:ori="h">
+        android:padding="8dp">
 
         <ImageView
             android:id="@+id/nickname_icon"
@@ -49,7 +44,6 @@
         android:textSize="16sp"
         android:layout_marginTop="16dp" />
 
-    <!-- Контейнер с наградами -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -67,8 +61,7 @@
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:src="@drawable/ic_cup"
-            android:contentDescription="Silver Trophy"
-            android:layout_marginStart="dp" />
+            android:contentDescription="Silver Trophy" />
 
         <ImageView
             android:layout_width="48dp"
@@ -85,8 +78,6 @@
             android:layout_marginStart="8dp" />
     </LinearLayout>
 
-
-    <!-- Кнопка -->
     <ImageView
         android:layout_width="350dp"
         android:layout_height="570dp"

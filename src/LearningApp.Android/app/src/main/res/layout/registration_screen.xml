@@ -1,7 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-
-
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -9,7 +6,6 @@
     android:gravity="center"
     android:background="#1E3D32">
 
-    <!-- Title -->
     <TextView
         android:id="@+id/registration_title"
         android:layout_width="wrap_content"
@@ -19,19 +15,13 @@
         android:textColor="#FFFFFF"
         android:layout_marginBottom="24dp" />
 
-    <!-- Circle with Icon -->
+    <ImageView
+        android:id="@+id/add_icon"
+        android:layout_width="217dp"
+        android:layout_height="204dp"
+        android:layout_gravity="center"
+        android:src="@drawable/ic_add" />
 
-
-        <ImageView
-            android:id="@+id/add_icon"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_add"
-            android:layout_gravity="center"
-             />
-
-
-    <!-- Nickname Input -->
     <EditText
         android:id="@+id/nickname_input"
         android:layout_width="match_parent"
@@ -40,10 +30,9 @@
         android:hint="Никнейм"
         android:background="@drawable/paint_text_background"
         android:padding="12dp"
-        android:hintTextColor="#AAAAAA"
+        android:textColorHint="#AAAAAA"
         android:textColor="#FFFFFF" />
 
-    <!-- Email Input -->
     <EditText
         android:id="@+id/email_input"
         android:layout_width="match_parent"
@@ -53,11 +42,10 @@
         android:hint="Email"
         android:background="@drawable/paint_text_background"
         android:padding="12dp"
-        android:hintTextColor="#AAAAAA"
+        android:textColorHint="#AAAAAA"
         android:textColor="#FFFFFF"
         android:inputType="textEmailAddress" />
 
-    <!-- Password Input -->
     <EditText
         android:id="@+id/password_input"
         android:layout_width="match_parent"
@@ -67,7 +55,7 @@
         android:hint="Пароль"
         android:background="@drawable/paint_text_background"
         android:padding="12dp"
-        android:hintTextColor="#AAAAAA"
+        android:textColorHint="#AAAAAA"
         android:textColor="#FFFFFF"
         android:inputType="textPassword" />
 
@@ -80,11 +68,10 @@
         android:hint="Повторите пароль"
         android:background="@drawable/paint_text_background"
         android:padding="12dp"
-        android:hintTextColor="#AAAAAA"
+        android:textColorHint="#AAAAAA"
         android:textColor="#FFFFFF"
         android:inputType="textPassword" />
 
-    <!-- Register Button -->
     <Button
         android:id="@+id/register_button"
         android:layout_width="match_parent"
@@ -94,4 +81,5 @@
         android:text="Зарегистрироваться"
         android:background="@drawable/rounded_button"
         android:textColor="#FFFFFF" />
+
 </LinearLayout>
