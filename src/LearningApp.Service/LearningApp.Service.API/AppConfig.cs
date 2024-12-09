@@ -15,7 +15,7 @@ namespace LearningApp.Service.API
 	{
 		public string Secret { get; set; }
 
-		public int AccessTokenValidityDays { get; set; }
+		public int AccessTokenValidityMinutes { get; set; }
 
 		public int RefreshTokenValidityDays { get; set; }
 	}

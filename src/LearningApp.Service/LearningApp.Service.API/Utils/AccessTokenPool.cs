@@ -1,4 +1,5 @@
-﻿using System.Collections.Concurrent;
+﻿using System;
+using System.Collections.Concurrent;
 using LearningApp.Service.API.Contracts.Authorization.Responses;
 
 namespace LearningApp.Service.API.Utils
@@ -21,6 +22,11 @@ namespace LearningApp.Service.API.Utils
 		{
 			_activeTokens.TryGetValue(refreshToken, out var tokenInfo);
 			return tokenInfo;
+		}
+
+		public bool IsExpired(string refreshToken)
+		{
+			return !_activeTokens.TryGetValue(refreshToken, out var accessTokenResponse) || accessTokenResponse.AccessTokenExpireDate < DateTimeOffset.UtcNow;
 		}
 	}
 }

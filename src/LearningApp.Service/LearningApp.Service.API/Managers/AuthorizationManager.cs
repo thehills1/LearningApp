@@ -209,13 +209,15 @@ namespace LearningApp.Service.API.Managers
 				new Claim(LanguageClaim, user.Language.ToString())
 			};
 
-			var rawAccessToken = CreateAccessToken(authClaims, out var tokenExpireDate);			
+			var rawAccessToken = CreateAccessToken(authClaims, out var tokenExpireDate);
+			var refreshTokenExpireDate = DateTimeOffset.UtcNow.AddDays(_appConfig.Jwt.RefreshTokenValidityDays);
 			var accessToken = new JwtSecurityTokenHandler().WriteToken(rawAccessToken);
 			var tokenResponse = new AccessTokenResponse()
 			{
 				AccessToken = accessToken,
 				AccessTokenExpireDate = tokenExpireDate,
-				RefreshToken = refreshToken
+				RefreshToken = refreshToken,
+				RefreshTokenExpireDate = refreshTokenExpireDate
 			};
 
 			_accessTokenPool.Append(tokenResponse);
@@ -229,6 +231,12 @@ namespace LearningApp.Service.API.Managers
 			if (refreshToken == null)
 			{
 				checkResult = MethodResult<string>.Error(StatusCodes.Status403Forbidden, TranslationKeys.AuthorizationRefreshTokenNotFound);
+				return false;
+			}
+
+			if (_accessTokenPool.IsExpired(refreshToken))
+			{
+				checkResult = MethodResult<string>.Error(StatusCodes.Status401Unauthorized, TranslationKeys.AuthorizationSessionIsNotValid);
 				return false;
 			}
 
@@ -313,8 +321,7 @@ namespace LearningApp.Service.API.Managers
 
 		private JwtSecurityToken CreateAccessToken(List<Claim> authClaims, out DateTimeOffset tokenExpireDate)
 		{
-			var dateTimeNow = DateTimeOffset.UtcNow;
-			tokenExpireDate = dateTimeNow.AddDays(_appConfig.Jwt.AccessTokenValidityDays);
+			tokenExpireDate = DateTimeOffset.UtcNow.AddMinutes(_appConfig.Jwt.AccessTokenValidityMinutes);
 
 			var signingKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_appConfig.Jwt.Secret));
 			var signingCredentials = new SigningCredentials(signingKey, SecurityAlgorithms.HmacSha256);

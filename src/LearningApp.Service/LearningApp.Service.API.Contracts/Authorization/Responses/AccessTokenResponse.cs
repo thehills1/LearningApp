@@ -11,5 +11,7 @@ namespace LearningApp.Service.API.Contracts.Authorization.Responses
 		public DateTimeOffset AccessTokenExpireDate { get; init; }
 
 		public string RefreshToken { get; init; }
+
+		public DateTimeOffset RefreshTokenExpireDate { get; init; }
 	}
 }

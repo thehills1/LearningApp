@@ -6,6 +6,7 @@ namespace LearningApp.Service.API.Utils
 	{
 		void Append(AccessTokenResponse tokenResponse);
 		void Delete(string refreshToken);
+		bool IsExpired(string refreshToken);
 		AccessTokenResponse TryGetTokenInfo(string refreshToken);
 	}
 }
