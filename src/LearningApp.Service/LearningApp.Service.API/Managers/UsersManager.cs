@@ -1,12 +1,10 @@
-﻿using System.Linq;
-using AutoMapper;
+﻿using AutoMapper;
 using LearningApp.Service.API.Contracts.Authorization.Requests;
 using LearningApp.Service.API.Contracts.Users.Common;
 using LearningApp.Service.API.Contracts.Users.Requests;
 using LearningApp.Service.API.Contracts.Users.Responses;
 using LearningApp.Service.API.Entities;
 using LearningApp.Service.API.Utils;
-using LearningApp.Service.Core.Extensions;
 using LearningApp.Service.Database.Repositories;
 using LearningApp.Service.Database.Tables;
 using LearningApp.Service.Langs.API;
@@ -19,18 +17,24 @@ namespace LearningApp.Service.API.Managers
 	{
 		private readonly ILogger<UsersManager> _logger;
 		private readonly IDbRepository _dbRepository;
+		private readonly IUsersManagerInternal _usersManagerInternal;
 		private readonly ICredentialsManager _credentialsManager;
+		private readonly IQuestionsManager _questionsManager;
 		private readonly IMapper _mapper;
 
 		public UsersManager(
 			ILogger<UsersManager> logger, 
 			IDbRepository dbRepository, 
-			ICredentialsManager credentialsManager, 
+			IUsersManagerInternal usersManagerInternal,
+			ICredentialsManager credentialsManager,
+			IQuestionsManager questionsManager,
 			IMapper mapper)
 		{
 			_logger = logger;
 			_dbRepository = dbRepository;
+			_usersManagerInternal = usersManagerInternal;
 			_credentialsManager = credentialsManager;
+			_questionsManager = questionsManager;
 			_mapper = mapper;
 		}
 
@@ -41,13 +45,22 @@ namespace LearningApp.Service.API.Managers
 				return MethodResult<UserInfoResponse>.Error(StatusCodes.Status403Forbidden, TranslationKeys.CommonYouHasNoPerms);
 			}
 
-			var checkUserExistsResult = CheckUserExists(id, true);
+			var checkUserExistsResult = _usersManagerInternal.CheckUserExists(id, true);
 			if (!checkUserExistsResult.IsSuccess)
 			{
 				return checkUserExistsResult.ToResult<UserInfoResponse>();
 			}
 
-			return MethodResult<UserInfoResponse>.Success(_mapper.Map<UserInfoResponse>(checkUserExistsResult.Value));
+			var getLastSubmissionsResult = _questionsManager.GetLastSubmissionsInfo(id);
+			if (!getLastSubmissionsResult.IsSuccess)
+			{
+				return getLastSubmissionsResult.ToResult<UserInfoResponse>();
+			}
+
+			var userInfoResponse = _mapper.Map<UserInfoResponse>(checkUserExistsResult.Value);
+			userInfoResponse.LastSubmissionsInfo = getLastSubmissionsResult.Value;
+
+			return MethodResult<UserInfoResponse>.Success(userInfoResponse);
 		}
 
 		public MethodResult TryChangePassword(long userId, ChangePasswordRequest request)
@@ -67,7 +80,7 @@ namespace LearningApp.Service.API.Managers
 				return checkNewPasswordResult;
 			}
 
-			var user = GetUserInternal(userId, false);
+			var user = _usersManagerInternal.GetUser(userId, false);
 			if (!_credentialsManager.CheckPassword(user, request.Password))
 			{
 				return MethodResult.Error(StatusCodes.Status400BadRequest, TranslationKeys.CredentialsPasswordIsWrong);
@@ -92,69 +105,6 @@ namespace LearningApp.Service.API.Managers
 			_dbRepository.Add(user);
 
 			return user;
-		}
-
-		public User GetUserInternal(long id, bool noTracking = true)
-		{
-			return _dbRepository.Get<User>(id, noTracking);
-		}
-
-		public MethodResult<User> CheckUserExistsByEmail(string email, bool errorIfExists, bool noTraking = true)
-		{
-			if (email.IsNullOrEmpty())
-			{
-				return MethodResult<User>.Error(StatusCodes.Status400BadRequest, TranslationKeys.UsersEmailCanNotBeNull);
-			}
-
-			var user = _dbRepository.Get<User>(t => t.Email == email, noTraking).FirstOrDefault();
-			if (errorIfExists && user != null)
-			{
-				return MethodResult<User>.Error(StatusCodes.Status409Conflict, TranslationKeys.UsersUserWithSameEmailAlreadyExists, email);
-			}
-
-			if (!errorIfExists && user == null)
-			{
-				return MethodResult<User>.Error(StatusCodes.Status404NotFound, TranslationKeys.UsersUserWithSameEmailNotExists, email);
-			}
-
-			return MethodResult<User>.Success(user);
-		}
-
-		public MethodResult<User> CheckUserExistsByUsername(string username, bool errorIfExists, bool noTraking = true)
-		{
-			if (username.IsNullOrEmpty())
-			{
-				return MethodResult<User>.Error(StatusCodes.Status400BadRequest, TranslationKeys.UsersUsernameCanNotBeNull);
-			}
-
-			var user = _dbRepository.Get<User>(t => t.Username == username, noTraking).FirstOrDefault();
-			if (errorIfExists && user != null)
-			{
-				return MethodResult<User>.Error(StatusCodes.Status409Conflict, TranslationKeys.UsersUserWithSameUsernameAlreadyExists, username);
-			}
-
-			if (!errorIfExists && user == null)
-			{
-				return MethodResult<User>.Error(StatusCodes.Status409Conflict, TranslationKeys.UsersUserWithSameUsernameNotExists, username);
-			}
-
-			return MethodResult<User>.Success(user);
-		}
-
-		public MethodResult<User> CheckUserExists(long id, bool noTracking = true)
-		{
-			if (id <= 0)
-			{
-				return MethodResult<User>.Error(StatusCodes.Status400BadRequest, TranslationKeys.UsersUserIdCanNotBeLessOrEqualToZero);
-			}
-
-			var user = GetUserInternal(id);
-			if (user == null)
-			{
-				return MethodResult<User>.Error(StatusCodes.Status404NotFound, TranslationKeys.UsersUserNotFound);
-			}
-
-			return MethodResult<User>.Success(user);
 		}
 	}
 }

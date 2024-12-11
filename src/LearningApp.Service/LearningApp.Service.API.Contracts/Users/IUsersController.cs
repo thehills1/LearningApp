@@ -6,6 +6,7 @@ namespace LearningApp.Service.API.Contracts.Users
 	public interface IUsersController
 	{
 		IActionResult ChangePassword([FromBody] ChangePasswordRequest changeRequest);
+		IActionResult GetProfile();
 		IActionResult GetUserById(long userId);
 	}
 }

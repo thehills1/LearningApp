@@ -23,6 +23,7 @@ namespace LearningApp.Service.API.Managers
 
 		private readonly ILogger<QuestionsManager> _logger;
 		private readonly IUserSessionsManager _userSessionsManager;
+		private readonly IUsersManagerInternal _usersManagerInternal;
 		private readonly ISyncManager _syncManager;
 		private readonly IDbRepository _dbRepository;
 		private readonly IImagesCache _imagesCache;
@@ -30,7 +31,8 @@ namespace LearningApp.Service.API.Managers
 
 		public QuestionsManager(
 			ILogger<QuestionsManager> logger, 
-			IUserSessionsManager userSessionsManager, 
+			IUserSessionsManager userSessionsManager,
+			IUsersManagerInternal usersManagerInternal,
 			ISyncManager syncManager, 
 			IDbRepository dbRepository, 
 			IImagesCache imagesCache, 
@@ -38,6 +40,7 @@ namespace LearningApp.Service.API.Managers
 		{
 			_logger = logger;
 			_userSessionsManager = userSessionsManager;
+			_usersManagerInternal = usersManagerInternal;
 			_syncManager = syncManager;
 			_dbRepository = dbRepository;
 			_imagesCache = imagesCache;
@@ -49,6 +52,12 @@ namespace LearningApp.Service.API.Managers
 			if (request == null)
 			{
 				return MethodResult<QuestionInfoResponse>.Error(StatusCodes.Status400BadRequest, TranslationKeys.QuestionsGetNextQuestionRequestCanNotBeNull);
+			}
+
+			var checkUserExistsResult = _usersManagerInternal.CheckUserExists(userId, true);
+			if (!checkUserExistsResult.IsSuccess)
+			{
+				return checkUserExistsResult.ToResult<QuestionInfoResponse>();
 			}
 
 			if (!CheckQuestionDifficulty(request.Difficulty, out var checkDifficultyResult))
@@ -66,6 +75,12 @@ namespace LearningApp.Service.API.Managers
 
 		public MethodResult<QuestionInfoResponse> TryGetQuestionById(long userId, PermissionLevel userPerms, long questionId, Language language)
 		{
+			var checkUserExistsResult = _usersManagerInternal.CheckUserExists(userId, true);
+			if (!checkUserExistsResult.IsSuccess)
+			{
+				return checkUserExistsResult.ToResult<QuestionInfoResponse>();
+			}
+
 			if (!CheckQuestionId(questionId, out var checkQuestionIdResult, true))
 			{
 				return checkQuestionIdResult.ToResult<QuestionInfoResponse>();
@@ -85,6 +100,12 @@ namespace LearningApp.Service.API.Managers
 			if (submitRequest == null)
 			{
 				return MethodResult<SubmitQuestionAnswerResponse>.Error(StatusCodes.Status400BadRequest, TranslationKeys.QuestionsSubmitRequestCanNotBeNull);
+			}
+
+			var checkUserExistsResult = _usersManagerInternal.CheckUserExists(userId, true);
+			if (!checkUserExistsResult.IsSuccess)
+			{
+				return checkUserExistsResult.ToResult<SubmitQuestionAnswerResponse>();
 			}
 
 			if (!CheckQuestionId(submitRequest.QuestionId, out var checkQuestionIdResult, true))
@@ -124,6 +145,39 @@ namespace LearningApp.Service.API.Managers
 			}
 
 			return SubmitQuestionAnswerInternal(userId, submitRequest, question, answers, userSession);
+		}
+
+		public MethodResult<LastSubmissionsInfo> GetLastSubmissionsInfo(long userId)
+		{
+			var checkUserExistsResult = _usersManagerInternal.CheckUserExists(userId, true);
+			if (!checkUserExistsResult.IsSuccess)
+			{
+				return checkUserExistsResult.ToResult<LastSubmissionsInfo>();
+			}
+
+			var startPeriodDate = DateTimeOffset.UtcNow.AddDays(-MinDaysToRepeatQuestion);
+			var receivedScore = _dbRepository.Get<Submission>(s => s.UserId == userId && s.SubmissionDate > startPeriodDate).Select(s => s.ReceivedScore).Sum();
+			var treeLevel = GetTreeLevelByScore(receivedScore);
+			var lastSubmissionsInfo = new LastSubmissionsInfo
+			{
+				LastDays = MinDaysToRepeatQuestion,
+				ReceivedScore = receivedScore,
+				TreeLevel = treeLevel
+			};
+
+			return MethodResult<LastSubmissionsInfo>.Success(lastSubmissionsInfo);
+		}
+
+		private TreeLevel GetTreeLevelByScore(double score)
+		{
+			return score switch
+			{
+				0 => TreeLevel.Died,
+				<= 100 => TreeLevel.Seed,
+				<= 200 => TreeLevel.Small,
+				<= 300 => TreeLevel.Medium,
+				_ => TreeLevel.Large
+			};
 		}
 
 		private MethodResult<QuestionInfoResponse> GetNextQuestionInternal(long userId, Language userLanguage, GetNextQuestionRequest request)

@@ -11,6 +11,7 @@ using LearningApp.Service.Database.Repositories;
 using LearningApp.Service.Langs.Core;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -90,6 +91,7 @@ namespace LearningApp.Service.API
 			AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 
 			var app = builder.Build();
+			app.UsePathBase(new PathString("/api"));
 
 			if (app.Environment.IsDevelopment())
 			{
@@ -121,6 +123,7 @@ namespace LearningApp.Service.API
 			container.AddScoped<ICredentialsManager, CredentialsManager>();
 			container.AddScoped<IAuthorizationManager, AuthorizationManager>();
 			container.AddScoped<IUsersManager, UsersManager>();
+			container.AddScoped<IUsersManagerInternal, UsersManagerInternal>();
 			container.AddScoped<IQuestionsManager, QuestionsManager>();
 
 			container.AddScoped<IDbRepository, DbRepository>();

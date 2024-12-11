@@ -31,7 +31,7 @@ namespace LearningApp.Service.API.Controllers
 		/// <response code="401">Не авторизован</response>
 		/// <response code="403">Нет доступа к просмотру информации об указанном пользователе</response>
 		/// <response code="404">Пользователь с указанным id не найден</response>
-		[HttpPost("{userId}")]
+		[HttpGet("{userId}")]
 		[ProducesResponseType<UserInfoResponse>(StatusCodes.Status200OK)]
 		[ProducesResponseType(typeof(void), StatusCodes.Status400BadRequest)]
 		[ProducesResponseType(typeof(void), StatusCodes.Status401Unauthorized)]
@@ -40,6 +40,26 @@ namespace LearningApp.Service.API.Controllers
 		public IActionResult GetUserById(long userId)
 		{
 			return _usersManager.TryGetUserById(userId, CurrentUserId, CurrentUserPerms).ToActionResult(CurrentUserLanguage);
+		}
+
+		/// <summary>
+		/// Получить карточку профиля.
+		/// </summary>
+		/// <returns></returns>
+		/// <response code="200">Информация о пользователе</response>
+		/// <response code="400">Указан некорректный id пользователя</response>
+		/// <response code="401">Не авторизован</response>
+		/// <response code="403">Нет доступа к просмотру информации об указанном пользователе</response>
+		/// <response code="404">Пользователь с указанным id не найден</response>
+		[HttpGet("profile")]
+		[ProducesResponseType<UserInfoResponse>(StatusCodes.Status200OK)]
+		[ProducesResponseType(typeof(void), StatusCodes.Status400BadRequest)]
+		[ProducesResponseType(typeof(void), StatusCodes.Status401Unauthorized)]
+		[ProducesResponseType(typeof(void), StatusCodes.Status403Forbidden)]
+		[ProducesResponseType(typeof(void), StatusCodes.Status404NotFound)]
+		public IActionResult GetProfile()
+		{
+			return GetUserById(CurrentUserId);
 		}
 
 		/// <summary>

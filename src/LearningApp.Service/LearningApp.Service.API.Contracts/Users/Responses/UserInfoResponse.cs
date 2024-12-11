@@ -1,4 +1,5 @@
 ﻿using System;
+using LearningApp.Service.API.Contracts.Questions.Common;
 using LearningApp.Service.API.Contracts.Users.Common;
 
 namespace LearningApp.Service.API.Contracts.Users.Responses
@@ -16,5 +17,7 @@ namespace LearningApp.Service.API.Contracts.Users.Responses
 		public Language Language { get; set; }
 
 		public DateTimeOffset RegistrationDate { get; set; }
+
+		public LastSubmissionsInfo LastSubmissionsInfo { get; set; }
 	}
 }

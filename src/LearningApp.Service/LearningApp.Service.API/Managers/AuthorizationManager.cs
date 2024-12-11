@@ -34,6 +34,7 @@ namespace LearningApp.Service.API.Managers
 
 		private readonly ILogger<AuthorizationManager> _logger;
 		private readonly IUsersManager _usersManager;
+		private readonly IUsersManagerInternal _usersManagerInternal;
 		private readonly IAccessTokenPool _accessTokenPool;
 		private readonly ISyncManager _syncManager;
 		private readonly ICredentialsManager _credentialsManager;
@@ -42,7 +43,8 @@ namespace LearningApp.Service.API.Managers
 
 		public AuthorizationManager(
 			ILogger<AuthorizationManager> logger, 
-			IUsersManager usersManager, 
+			IUsersManager usersManager,
+			IUsersManagerInternal usersManagerInternal, 
 			IAccessTokenPool accessTokenPool, 
 			ISyncManager syncManager, 
 			ICredentialsManager credentialsManager,
@@ -51,6 +53,7 @@ namespace LearningApp.Service.API.Managers
 		{
 			_logger = logger;
 			_usersManager = usersManager;
+			_usersManagerInternal = usersManagerInternal;
 			_accessTokenPool = accessTokenPool;
 			_syncManager = syncManager;
 			_credentialsManager = credentialsManager;
@@ -79,7 +82,7 @@ namespace LearningApp.Service.API.Managers
 				return checkPasswordResult.ToResult<AccessTokenResponse>();
 			}
 
-			var checkUserExistsResult = _usersManager.CheckUserExistsByEmail(loginRequest.Email, false, true);
+			var checkUserExistsResult = _usersManagerInternal.CheckUserExistsByEmail(loginRequest.Email, false, true);
 			if (!checkUserExistsResult.IsSuccess)
 			{
 				return checkUserExistsResult.ToResult<AccessTokenResponse>();
@@ -129,13 +132,13 @@ namespace LearningApp.Service.API.Managers
 			{
 				using (_syncManager.Lock(DefaultSyncs.Username(registrationRequest.Username)))
 				{
-					var checkUserWithSameEmailExistsResult = _usersManager.CheckUserExistsByEmail(registrationRequest.Email, true, true);
+					var checkUserWithSameEmailExistsResult = _usersManagerInternal.CheckUserExistsByEmail(registrationRequest.Email, true, true);
 					if (!checkUserWithSameEmailExistsResult.IsSuccess)
 					{
 						return checkUserWithSameEmailExistsResult.ToResult<AccessTokenResponse>();
 					}
 
-					var checkUserWithSameUsernameExistsResult = _usersManager.CheckUserExistsByUsername(registrationRequest.Username, true, true);
+					var checkUserWithSameUsernameExistsResult = _usersManagerInternal.CheckUserExistsByUsername(registrationRequest.Username, true, true);
 					if (!checkUserWithSameUsernameExistsResult.IsSuccess)
 					{
 						return checkUserWithSameUsernameExistsResult.ToResult<AccessTokenResponse>();
@@ -261,7 +264,7 @@ namespace LearningApp.Service.API.Managers
 		{
 			var userId = user.Claims.FirstOrDefault(c => c.Type == UserIdClaim)?.Value;
 			User userTable;
-			if (userId == null || !long.TryParse(userId, out var parsedUserId) || (userTable = _usersManager.GetUserInternal(parsedUserId)) == null)
+			if (userId == null || !long.TryParse(userId, out var parsedUserId) || (userTable = _usersManagerInternal.GetUser(parsedUserId)) == null)
 			{
 				checkResult = MethodResult<User>.Error(StatusCodes.Status403Forbidden, TranslationKeys.AuthorizationUserNotFound);
 			}
@@ -326,7 +329,7 @@ namespace LearningApp.Service.API.Managers
 			var signingKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_appConfig.Jwt.Secret));
 			var signingCredentials = new SigningCredentials(signingKey, SecurityAlgorithms.HmacSha256);
 
-			return new JwtSecurityToken(expires: tokenExpireDate.DateTime, claims: authClaims, signingCredentials: signingCredentials);
+			return new JwtSecurityToken(expires: tokenExpireDate.DateTime.ToUniversalTime().AddHours(3), claims: authClaims, signingCredentials: signingCredentials);
 		}
 
 		private string GenerateRefreshToken()
