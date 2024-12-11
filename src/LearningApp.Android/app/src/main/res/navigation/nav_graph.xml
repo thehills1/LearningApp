@@ -3,12 +3,35 @@
 	xmlns:app="http://schemas.android.com/apk/res-auto"
 	xmlns:tools="http://schemas.android.com/tools"
 	android:id="@+id/nav_graph"
-	app:startDestination="@id/loginFragment">
+	app:startDestination="@id/authorizationFragment">
 
 	<fragment
-		android:id="@+id/loginFragment"
-		android:name="com.example.learningappandroid.ui.view.fragments.LoginFragment"
-		tools:layout="@layout/login_fragment">
+		android:id="@+id/authorizationFragment"
+		android:name="com.example.learningappandroid.ui.view.fragments.AuthorizationFragment"
+		tools:layout="@layout/authorization_fragment">
+		<action
+			android:id="@+id/action_navigate_to_registration"
+			app:destination="@id/registrationFragment"/>
+		<action
+			android:id="@+id/action_navigate_to_home"
+			app:destination="@id/homeFragment"/>
+	</fragment>
 
+	<fragment
+		android:id="@+id/registrationFragment"
+		android:name="com.example.learningappandroid.ui.view.fragments.RegistrationFragment"
+		tools:layout="@layout/registration_fragment">
+		<action
+			android:id="@+id/action_navigate_to_authorization"
+			app:destination="@id/authorizationFragment"/>
+		<action
+			android:id="@+id/action_navigate_to_home"
+			app:destination="@id/homeFragment" />
+	</fragment>
+
+	<fragment
+		android:id="@+id/homeFragment"
+		android:name="com.example.learningappandroid.ui.view.fragments.HomeFragment"
+		tools:layout="@layout/home_fragment">
 	</fragment>
 </navigation>

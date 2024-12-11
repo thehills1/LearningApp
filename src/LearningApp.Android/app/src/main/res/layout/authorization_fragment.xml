@@ -6,7 +6,7 @@
 		<import type="android.text.InputType" />
 		<variable
 			name="viewModel"
-			type="com.example.learningappandroid.ui.viewmodel.LoginViewModel" />
+			type="com.example.learningappandroid.ui.viewmodel.AuthorizationViewModel" />
 	</data>
 
 	<LinearLayout
@@ -22,10 +22,10 @@
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
 			android:layout_marginTop="60dp"
+			android:layout_marginBottom="50dp"
 			android:text="Вход в систему"
 			android:textSize="24sp"
 			android:textColor="@android:color/white"
-			android:layout_marginBottom="50dp"
 			android:gravity="center" />
 
 		<ImageView
@@ -37,78 +37,65 @@
 
 		<EditText
 			android:id="@+id/email"
+			style="@style/InputFieldDefault"
 			android:layout_width="300dp"
 			android:layout_height="wrap_content"
-			android:hint="Укажите email"
-			android:textSize="14sp"
-			android:background="@drawable/paint_text_background"
-			android:backgroundTint="@android:color/white"
-			android:textColorHint="#888888"
-			android:textColor="@android:color/black"
 			android:layout_marginBottom="8dp"
 			android:padding="12dp"
-			android:inputType="@{viewModel.authorizing ? InputType.TYPE_NULL : InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS}"
-			android:text="@={viewModel.email}" />
+			android:text="@={viewModel.email}"
+			android:hint="Укажите email"
+			android:focusable="@{!viewModel.authorizing}"
+			android:inputType="textEmailAddress" />
 
 		<TextView
 			android:id="@+id/email_error"
+			style="@style/ErrorMessageDefault"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
-			android:text="@{viewModel.emailErrorMessage}"
-			android:textSize="12sp"
-			android:textColor="@android:color/holo_red_light"
-			android:visibility="@{viewModel.emailErrorMessage == null || viewModel.emailErrorMessage.isEmpty() ? View.GONE : View.VISIBLE }"
 			android:layout_marginBottom="8dp"
-			android:gravity="start" />
+			android:text="@{viewModel.emailErrorMessage}"
+			android:visibility="@{viewModel.emailErrorMessage == null || viewModel.emailErrorMessage.isEmpty() ? View.GONE : View.VISIBLE }" />
 
 		<EditText
 			android:id="@+id/password"
+			style="@style/InputFieldDefault"
 			android:layout_width="300dp"
 			android:layout_height="wrap_content"
 			android:hint="Введите пароль"
-			android:textSize="14sp"
-			android:background="@drawable/paint_text_background"
-			android:backgroundTint="@android:color/white"
-			android:textColorHint="#888888"
-			android:textColor="@android:color/black"
 			android:layout_marginBottom="8dp"
 			android:padding="12dp"
-			android:inputType="@{viewModel.authorizing ? InputType.TYPE_NULL : InputType.TYPE_TEXT_VARIATION_PASSWORD}"
+			android:focusable="@{!viewModel.authorizing}"
+			android:inputType="textPassword"
 			android:text="@={viewModel.password}"/>
 
 		<TextView
 			android:id="@+id/password_error"
+			style="@style/ErrorMessageDefault"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
-			android:text="@{viewModel.passwordErrorMessage}"
-			android:textSize="12sp"
-			android:textColor="@android:color/holo_red_light"
-			android:visibility="@{viewModel.passwordErrorMessage == null || viewModel.passwordErrorMessage.isEmpty() ? View.GONE : View.VISIBLE }"
 			android:layout_marginBottom="16dp"
-			android:gravity="start" />
+			android:text="@{viewModel.passwordErrorMessage}"
+			android:visibility="@{viewModel.passwordErrorMessage == null || viewModel.passwordErrorMessage.isEmpty() ? View.GONE : View.VISIBLE }" />
 
 		<android.widget.Button
 			android:id="@+id/login_button"
+			style="@style/ButtonDefault"
 			android:layout_width="300dp"
 			android:layout_height="wrap_content"
-			android:textAllCaps="false"
 			android:text="Войти"
 			android:background="@{viewModel.loginButtonEnabled ? @drawable/button_enabled : @drawable/button_disabled}"
-			android:textColor="@android:color/black"
 			android:layout_marginBottom="16dp"
 			android:enabled="@{viewModel.loginButtonEnabled}"
 			android:onClick="@{() -> viewModel.tryAuthorize()}"/>
 
 		<TextView
 			android:id="@+id/error_message"
+			style="@style/ErrorMessageDefault"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
-			android:text="@{viewModel.errorMessage}"
-			android:textSize="14sp"
-			android:textColor="@android:color/holo_red_light"
-			android:visibility="@{viewModel.errorMessage == null || viewModel.errorMessage.isEmpty() ? View.GONE : View.VISIBLE }"
 			android:layout_marginTop="8dp"
-			android:gravity="center" />
+			android:text="@{viewModel.errorMessage}"
+			android:visibility="@{viewModel.errorMessage == null || viewModel.errorMessage.isEmpty() ? View.GONE : View.VISIBLE }" />
 
 		<TextView
 			android:id="@+id/register_link"
@@ -120,7 +107,8 @@
 			android:layout_marginTop="30dp"
 			android:gravity="center"
 			android:clickable="true"
-			android:focusable="true" />
+			android:focusable="true"
+			android:onClick="@{() -> viewModel.navigateToRegistration()}"/>
 
 	</LinearLayout>
 </layout>

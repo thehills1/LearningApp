@@ -1,0 +1,84 @@
+<layout>
+	<data>
+		<import type="android.view.View" />
+		<import type="android.text.InputType" />
+		<variable
+			name="viewModel"
+			type="com.example.learningappandroid.ui.viewmodel.HomeViewModel" />
+	</data>
+	<LinearLayout
+		xmlns:android="http://schemas.android.com/apk/res/android"
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		android:orientation="vertical"
+		android:background="#1E3D32"
+		android:id="@+id/main_screen">
+
+		<LinearLayout
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_marginVertical="16dp"
+			android:background="#2E8B60"
+			android:padding="8dp">
+
+			<ImageView
+				android:id="@+id/nickname_icon"
+				android:layout_width="24dp"
+				android:layout_height="24dp"
+				android:src="@drawable/ic_nickname" />
+
+			<TextView
+				android:id="@+id/username"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_marginStart="10dp"
+				android:layout_weight="1"
+				android:text="@{viewModel.userInfo.username}"
+				android:textColor="#FFFFFF"
+				android:textSize="18sp" />
+
+			<ImageView
+				android:id="@+id/settings_icon"
+				android:layout_width="24dp"
+				android:layout_height="24dp"
+				android:layout_alignParentEnd="true"
+				android:src="@drawable/ic_settings" />
+		</LinearLayout>
+
+		<LinearLayout
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:orientation="horizontal">
+			<TextView
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_marginStart="16dp"
+				android:text='@{"Ваши очки за последние " + viewModel.userInfo.lastSubmissionsInfo.lastDays + " дней: " + viewModel.userInfo.lastSubmissionsInfo.receivedScore}'
+				android:textColor="#FFFFFF"
+				android:textSize="14sp" />
+
+			<ImageView
+				android:id="@+id/score_icon"
+				android:layout_width="22dp"
+				android:layout_height="22dp"
+				android:layout_marginStart="1dp"
+				android:src="@drawable/ic_score" />
+		</LinearLayout>
+
+		<ImageView
+			android:layout_width="250dp"
+			android:layout_height="250dp"
+			android:layout_gravity="center"
+			android:layout_marginTop="24dp"
+			android:background="@drawable/tree_image" />
+
+		<Button
+			android:id="@+id/start_learning_button"
+			style="@style/ButtonDefault"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_margin="24dp"
+			android:background="@drawable/button_enabled"
+			android:text="Начать практиковаться" />
+	</LinearLayout>
+</layout>

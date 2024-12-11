@@ -4,12 +4,18 @@ import com.example.learningappandroid.api.contracts.authorization.IAuthorization
 import com.example.learningappandroid.api.contracts.authorization.requests.LoginRequest
 import com.example.learningappandroid.api.contracts.authorization.requests.RegistrationRequest
 import com.example.learningappandroid.api.contracts.authorization.responses.AccessTokenResponse
+import com.example.learningappandroid.utils.RetrofitBuilder
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.http.Body
 import retrofit2.http.Header
 
 class AuthorizationController(retrofit: Retrofit) : IAuthorizationController {
+	companion object {
+		fun getInstance(): AuthorizationController {
+			return AuthorizationController(RetrofitBuilder.getInstance())
+		}
+	}
 
 	private val api: IAuthorizationController = retrofit.create(IAuthorizationController::class.java)
 

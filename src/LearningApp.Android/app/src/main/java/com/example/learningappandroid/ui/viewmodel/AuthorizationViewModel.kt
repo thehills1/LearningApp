@@ -2,19 +2,27 @@ package com.example.learningappandroid.ui.viewmodel
 
 import androidx.databinding.BaseObservable
 import androidx.databinding.Bindable
+import androidx.navigation.fragment.NavHostFragment.Companion.findNavController
 import com.example.learningappandroid.BR
+import com.example.learningappandroid.R
 import com.example.learningappandroid.api.contracts.authorization.requests.LoginRequest
+import com.example.learningappandroid.api.contracts.authorization.responses.AccessTokenResponse
 import com.example.learningappandroid.api.contracts.users.common.Language
 import com.example.learningappandroid.api.controllers.AuthorizationController
+import com.example.learningappandroid.ui.view.fragments.AuthorizationFragment
+import com.example.learningappandroid.ui.viewmodel.RegistrationViewModel.Companion.maxPasswordLength
+import com.example.learningappandroid.ui.viewmodel.RegistrationViewModel.Companion.minPasswordLength
 import com.example.learningappandroid.utils.APIUtils
+import com.example.learningappandroid.utils.datastore.DataStoreManager
 import kotlinx.coroutines.*
-import retrofit2.Retrofit
 
-class LoginViewModel(
-	private val retrofit: Retrofit
+class AuthorizationViewModel(
+	private val fragment: AuthorizationFragment
 ) : BaseObservable() {
 	private val job = SupervisorJob()
 	private val scope = CoroutineScope(Dispatchers.IO + job)
+
+	private val authorizationController = AuthorizationController.getInstance()
 
 	@get:Bindable
 	var email: String = ""
@@ -75,18 +83,25 @@ class LoginViewModel(
 		errorMessage = null
 
 		scope.launch {
-			val controller = AuthorizationController(retrofit)
-			val response = controller.login(LoginRequest(email, password, Language.getIntValue(Language.Russian)))
-			withContext(Dispatchers.IO) {
+			val response = authorizationController.login(LoginRequest(email, password, Language.getIntValue(Language.Russian)))
+			withContext(Dispatchers.Main) {
 				if (response.isSuccessful) {
-					val tokenResponse = response.body()
-
+					DataStoreManager.appendAccessTokenInfo(response.body() as AccessTokenResponse)
+					navigateToHome()
 				} else {
 					errorMessage = APIUtils.getErrorText(response)
 					authorizing = false
 				}
 			}
 		}
+	}
+
+	fun navigateToRegistration() {
+		findNavController(fragment).navigate(R.id.action_navigate_to_registration)
+	}
+
+	fun navigateToHome() {
+		findNavController(fragment).navigate(R.id.action_navigate_to_home)
 	}
 
 	private fun validateInputs() {
@@ -105,11 +120,11 @@ class LoginViewModel(
 	}
 
 	private fun validatePassword(): Boolean {
-		val isPasswordValid = password.length >= 8
+		val isPasswordValid = password.length in minPasswordLength..maxPasswordLength
 		if (isPasswordValid) {
 			passwordErrorMessage = null
 		} else {
-			passwordErrorMessage = "Минимальная длина пароля - 8 символов."
+			passwordErrorMessage = "Длина пароля должна быть от 8 до 32 символов (включительно)."
 		}
 
 		return isPasswordValid

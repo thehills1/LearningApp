@@ -7,6 +7,7 @@ import androidx.navigation.fragment.NavHostFragment
 import com.example.learningappandroid.R
 import com.example.learningappandroid.databinding.MainActivityBinding
 import com.example.learningappandroid.ui.viewmodel.MainViewModel
+import com.example.learningappandroid.utils.datastore.DataStoreManager
 
 class MainActivity : AppCompatActivity() {
 	private lateinit var binding: MainActivityBinding
@@ -14,6 +15,8 @@ class MainActivity : AppCompatActivity() {
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
+
+		DataStoreManager.initialize(this)
 
 		viewModel = MainViewModel(applicationContext)
 		binding = DataBindingUtil.setContentView(this, R.layout.main_activity)

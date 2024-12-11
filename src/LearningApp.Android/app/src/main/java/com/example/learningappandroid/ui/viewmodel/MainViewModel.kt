@@ -11,19 +11,14 @@ import java.time.Clock
 import java.time.OffsetDateTime
 
 class MainViewModel constructor(context: Context) : BaseObservable() {
-	private val _dataStoreManager = DataStoreManager()
 	private val job = SupervisorJob()
 	private val viewModelScope = CoroutineScope(Dispatchers.Main + job)
 
 	private var _isAuthorized: Boolean = false
 
-	init {
-	    _dataStoreManager.initialize(context)
-	}
-
 	fun IsAuthorized() : Boolean {
 		viewModelScope.launch {
-			val result = _dataStoreManager.getAccessTokenExpireDate().isBefore(OffsetDateTime.now(Clock.systemUTC()))
+			val result = DataStoreManager.getAccessTokenExpireDate().isBefore(OffsetDateTime.now(Clock.systemUTC()))
 			_isAuthorized = result
 		}
 
